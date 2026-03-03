@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Protest";
+  src: url("./assets/fonts/ProtestDemo.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Goudos";
+  src: url("./assets/fonts/Goudos.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
