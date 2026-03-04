@@ -10,23 +10,43 @@ type Greeting = {
 };
 
 const Greetings = () => {
+  const PAGE_SIZE = 10;
+
+  const [greetings, setGreetings] = useState<Greeting[]>([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
-  const [greetings, setGreetings] = useState<Greeting[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchGreetings = async () => {
+  const fetchGreetings = async (pageNumber = 0) => {
+    const from = pageNumber * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
     const { data } = await supabase
       .from("greetings")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
-    if (data) setGreetings(data);
+    if (data) {
+      if (data.length < PAGE_SIZE) {
+        setHasMore(false);
+      }
+
+      setGreetings((prev) => [...prev, ...data]);
+    }
   };
 
   useEffect(() => {
-    fetchGreetings();
+    fetchGreetings(0);
   }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchGreetings(nextPage);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,7 +148,7 @@ const Greetings = () => {
       </motion.form>
 
       {/* Greeting List */}
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-6 max-h-[500px] overflow-y-auto">
         {greetings.map((item, index) => (
           <motion.div
             key={item.id}
@@ -141,6 +161,7 @@ const Greetings = () => {
               border border-white/20
               rounded-[30px]
               p-6
+              m-12
               text-black
               shadow-[0_10px_40px_rgba(0,0,0,0.15)]
             "
@@ -150,6 +171,23 @@ const Greetings = () => {
           </motion.div>
         ))}
       </div>
+
+      {hasMore && (
+        <div className="text-center mt-8">
+          <button
+            onClick={handleLoadMore}
+            className="
+        px-6 py-2
+        rounded-full
+        border border-white/30
+        hover:bg-white hover:text-black
+        transition
+      "
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </section>
   );
 };

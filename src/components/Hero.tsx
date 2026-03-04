@@ -34,7 +34,7 @@ const Hero = () => {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        whileInView="visible"
+        animate="visible"
         viewport={{ once: true }}
         className="
         h-full
