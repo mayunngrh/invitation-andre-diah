@@ -63,7 +63,7 @@ export default function Cover({ onOpen }: CoverProps) {
 
         <h1 className="text-4xl md:text-6xl font-serif mb-6">Andre & Diah</h1>
 
-        <p className="text-sm md:text-base mb-8">20 Juni 2026</p>
+        <p className="text-sm md:text-base mb-8">25 Maret 2026</p>
 
         <motion.button
           whileHover={{ scale: 1.05 }}

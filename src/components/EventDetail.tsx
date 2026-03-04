@@ -16,7 +16,9 @@ const EventDetail = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-16"
       >
-        <h2 className="text-2xl md:text-4xl font-serif text-black">
+        <h2
+          style={{ fontFamily: "Protest" }}
+          className="text-2xl md:text-4xl font-serif text-black">
           Detail Acara
         </h2>
         <div className="w-20 h-[1px] bg-white/40 mx-auto mt-4" />

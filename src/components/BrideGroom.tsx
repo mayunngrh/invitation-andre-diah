@@ -18,7 +18,9 @@ const BrideGroom = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-16"
       >
-        <h2 className="text-2xl md:text-4xl font-serif text-gray-800">
+        <h2
+          style={{ fontFamily: "Protest" }}
+          className="text-2xl md:text-4xl font-serif text-gray-800" >
           Mempelai
         </h2>
         <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4" />
