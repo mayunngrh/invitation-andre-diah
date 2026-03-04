@@ -22,7 +22,7 @@ const Blessing = () => {
         <p className="text-base md:text-lg leading-relaxed md:leading-loose tracking-wide">
           Wahai pasangan suami-istri, semoga kalian tetap bersatu dan tidak
           pernah terpisahkan. Semoga kalian mencapai hidup penuh kebahagiaan,
-          tinggal di rumah yang penuh kegembiraan bersama seluruh keturunanmu.
+          tinggal di rumah yang penuh kegembiraan bersama seluruh keturunanmu. tes
         </p>
 
         {/* Author */}
