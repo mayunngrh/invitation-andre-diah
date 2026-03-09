@@ -16,11 +16,8 @@ const Maps = () => {
     const lat = latitude;
     const lng = longitude;
 
-    if (isIOS()) {
-      window.open(`https://maps.apple.com/?ll=${lat},${lng}`, "_blank");
-    } else {
-      window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
-    }
+    const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+    window.open(url, "_blank");
   };
 
   return (
