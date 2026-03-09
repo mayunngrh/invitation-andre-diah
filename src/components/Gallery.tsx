@@ -92,7 +92,8 @@ const Gallery = () => {
       <div
         className="overflow-x-auto scrollbar-hide"
         style={{
-          WebkitOverflowScrolling: "touch"
+          WebkitOverflowScrolling: "touch",
+          touchAction: "pan-x"
         }}
       >
         <div className="flex gap-6 px-6 py-12">
