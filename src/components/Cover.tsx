@@ -47,7 +47,8 @@ export default function Cover({ onOpen, audioRef }: CoverProps) {
       initial={{ opacity: 1 }}
       animate={{ opacity: isOpen ? 0 : 1 }}
       transition={{ duration: 0.8 }}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
+      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${isOpen ? "pointer-events-none" : ""
+        }`}
     >
       <video
         autoPlay
