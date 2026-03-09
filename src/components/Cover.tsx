@@ -10,15 +10,24 @@ import videoCover from "../assets/cover/video-cover.mp4";
 
 type CoverProps = {
   onOpen?: () => void;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
 };
 
-export default function Cover({ onOpen }: CoverProps) {
+export default function Cover({ onOpen, audioRef }: CoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const guestName = params.get("guest");
 
   const handleOpen = () => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.muted = false;
+      audio.volume = 0;
+      audio.play();
+    }
+
     setIsOpen(true);
 
     document.documentElement.requestFullscreen();

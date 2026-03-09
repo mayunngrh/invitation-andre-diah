@@ -41,28 +41,16 @@ function Home() {
 
   return (
     <div className="font-serif">
-      <audio ref={audioRef} loop playsInline muted>
+      <audio ref={audioRef} loop playsInline preload="auto">
         <source src={bgmusic} type="audio/mpeg" />
       </audio>
 
-      {!isOpened && <Cover
-        onOpen={() => {
-          const audio = audioRef.current;
-
-          if (audio) {
-            audio.muted = false;
-            audio.volume = 0;
-
-            const playPromise = audio.play();
-
-            if (playPromise !== undefined) {
-              playPromise.catch(() => { });
-            }
-          }
-
-          setIsOpened(true);
-        }}
-      />}
+      {!isOpened && (
+        <Cover
+          audioRef={audioRef}
+          onOpen={() => setIsOpened(true)}
+        />
+      )}
 
       {/* main invitation part */}
       <Hero />
