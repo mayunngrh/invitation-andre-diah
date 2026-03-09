@@ -76,7 +76,7 @@ const Gallery = () => {
   };
 
   return (
-    <section className="relative overflow-hidden py-24">
+    <section className="relative  py-24">
 
       {/* Title */}
       <div className="text-center mb-16">
@@ -96,7 +96,7 @@ const Gallery = () => {
           touchAction: "pan-x"
         }}
       >
-        <div className="flex gap-6 px-6 py-12 w-max">
+        <div className="flex gap-6 px-6 py-12 ">
 
           {duplicatedImages.map((src, index) => (
             <motion.div
