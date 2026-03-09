@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "../services/supabase";
+import { formatTimeAgo } from "../utils/formatTimeAgo";
 
 type Greeting = {
   id: string;
@@ -14,25 +15,31 @@ const Greetings = () => {
   const PAGE_SIZE = 10;
 
   const [greetings, setGreetings] = useState<Greeting[]>([]);
+  const [totalGreetings, setTotalGreetings] = useState(0);
   const [attendance, setAttendance] = useState("Hadir");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
   const fetchGreetings = async (pageNumber = 0) => {
     const from = pageNumber * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
 
-    const { data } = await supabase
+    const { data, count } = await supabase
       .from("greetings")
-      .select("*")
+      .select("*", { count: "exact" })
       .order("created_at", { ascending: false })
       .range(from, to);
 
     if (!data) return;
+
+    if (count !== null) {
+      setTotalGreetings(count);
+    }
 
     if (data.length < PAGE_SIZE) {
       setHasMore(false);
@@ -51,10 +58,15 @@ const Greetings = () => {
     fetchGreetings(0);
   }, [initialized]);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = async () => {
     const nextPage = page + 1;
+
+    setLoadingMore(true);
+
     setPage(nextPage);
-    fetchGreetings(nextPage);
+    await fetchGreetings(nextPage);
+
+    setLoadingMore(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,6 +100,8 @@ const Greetings = () => {
           className="text-2xl md:text-4xl font-serif text-black uppercase tracking-[0.3em]">
           Ucapan & Doa
         </h2>
+        <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4 " />
+
         <div className="w-20 h-[1px] bg-white/40 mx-auto mt-4" />
       </div>
 
@@ -177,8 +191,18 @@ const Greetings = () => {
         </button>
       </motion.form>
 
+      <div className="max-w-5xl mx-auto space-y-6 max-h-[500px] overflow-y-auto">
+
+      </div>
+
+      <div className=" w-full flex justify-center text-gray-300 mb-6" >
+        {totalGreetings} Ucapan & Doa Tulus
+      </div>
+
+
       {/* Greeting List */}
       <div className="max-w-5xl mx-auto space-y-6 max-h-[500px] overflow-y-auto">
+
         {greetings.map((item, index) => (
           <motion.div
             key={item.id}
@@ -196,7 +220,12 @@ const Greetings = () => {
               shadow-[0_10px_40px_rgba(0,0,0,0.15)]
             "
           >
-            <p className="font-semibold mb-2">{item.name}</p>
+            <div className="flex justify-between items-center mb-2">
+              <p className="font-semibold">{item.name}</p>
+              <span className="text-xs text-gray-500">
+                {formatTimeAgo(item.created_at)}
+              </span>
+            </div>
             <p
               className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
                 ? "bg-green-500/20 text-green-700"
@@ -215,15 +244,26 @@ const Greetings = () => {
         <div className="text-center mt-8">
           <button
             onClick={handleLoadMore}
+            disabled={loadingMore}
             className="
-        px-6 py-2
-        rounded-full
-        border border-white/30
-        hover:bg-white hover:text-black
-        transition
-      "
+              px-6 py-2
+              rounded-full
+              border border-black/30
+              hover:bg-black hover:text-white
+              transition
+              flex items-center gap-2
+              justify-center
+              mx-auto
+            "
           >
-            Load More
+            {loadingMore ? (
+              <>
+                <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                Loading...
+              </>
+            ) : (
+              "Load More"
+            )}
           </button>
         </div>
       )}

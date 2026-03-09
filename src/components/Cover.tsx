@@ -6,6 +6,8 @@ import bgCoverComponent from "../assets/cover/bg-cover-component.jpg";
 import bgCoverComponent2 from "../assets/cover/bg-cover-component-2.jpg";
 import bgCoverComponent3 from "../assets/cover/bg-cover-component-3.jpg";
 
+import videoCover from "../assets/cover/video-cover.mp4";
+
 type CoverProps = {
   onOpen?: () => void;
 };
@@ -30,7 +32,7 @@ export default function Cover({ onOpen }: CoverProps) {
       onOpen?.();
     }, 800);
   };
-  
+
   return (
     <motion.section
       initial={{ opacity: 1 }}
@@ -38,11 +40,15 @@ export default function Cover({ onOpen }: CoverProps) {
       transition={{ duration: 0.8 }}
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
     >
-      {/* Background */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgCoverComponent3})` }}
-      />
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover grayscale"
+      >
+        <source src={videoCover} type="video/mp4" />
+      </video>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-xs" />

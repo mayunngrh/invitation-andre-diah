@@ -55,6 +55,8 @@ function Countdown() {
           className="text-2xl md:text-4xl font-serif text-black uppercase tracking-[0.3em]">
           Menuju Hari Bahagia
         </h2>
+        <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4" />
+
         <div className="w-20 h-[1px] bg-white/40 mx-auto mt-4" />
       </motion.div>
 

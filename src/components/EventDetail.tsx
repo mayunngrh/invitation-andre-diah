@@ -42,10 +42,12 @@ const EventDetail = () => {
         >
           {/* Title */}
           <h2
-            className="text-xl sm:text-2xl md:text-3xl mb-10 uppercase tracking-[0.3em]"
+            className="text-xl sm:text-2xl md:text-3xl uppercase tracking-[0.3em]"
           >
             Detail Acara
           </h2>
+          <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4 mb-10 " />
+
 
           {/* Resepsi */}
           <div className="space-y-3 sm:space-y-4">

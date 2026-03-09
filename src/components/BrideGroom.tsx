@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import bride1 from "../assets/bride-groom/bridge-1.jpg";
-import bride2 from "../assets/bride-groom/bridge-2.jpg";
+import bride1 from "../assets/bride-groom/bride-1.jpg";
+import bride2 from "../assets/bride-groom/bride-2.jpg";
 import groom1 from "../assets/bride-groom/groom-1.jpg";
 import groom2 from "../assets/bride-groom/groom-2.jpg";
 
