@@ -1,11 +1,27 @@
 import { motion } from "framer-motion";
 
 const Maps = () => {
+
   const latitude = -8.549369322108705;
   const longitude = 115.21920024047502;
 
   const embedUrl = `https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
   const openMapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+  const isIOS = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent);
+  };
+
+  const openMaps = () => {
+    const lat = latitude;
+    const lng = longitude;
+
+    if (isIOS()) {
+      window.open(`https://maps.apple.com/?ll=${lat},${lng}`, "_blank");
+    } else {
+      window.open(`https://www.google.com/maps?q=${lat},${lng}`, "_blank");
+    }
+  };
 
   return (
     <section className="relative py-24 px-6 md:px-16 overflow-hidden">
@@ -60,7 +76,7 @@ const Maps = () => {
             </p>
 
             <a
-              href={openMapUrl}
+              onClick={openMaps}
               target="_blank"
               rel="noopener noreferrer"
               className="
