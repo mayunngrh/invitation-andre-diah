@@ -12,6 +12,7 @@ import Greetings from "../components/Greetings";
 import Hero from "../components/Hero";
 import Maps from "../components/Maps";
 import Blessing from "../components/Blessing";
+import Thanks from "../components/Thanks";
 
 function Home() {
   const [isOpened, setIsOpened] = useState(false);
@@ -21,11 +22,6 @@ function Home() {
     if (!isOpened || !audioRef.current) return;
 
     const audio = audioRef.current;
-
-    audio.volume = 0;
-    audio.play().catch((error) => {
-      console.error("Error playing audio:", error);
-    });
 
     const targetVolume = 0.5;
     const fadeDuration = 2000;
@@ -45,28 +41,39 @@ function Home() {
 
   return (
     <div className="font-serif">
-      <audio ref={audioRef} loop>
+      <audio ref={audioRef} loop playsInline muted>
         <source src={bgmusic} type="audio/mpeg" />
       </audio>
 
-      {!isOpened && <Cover onOpen={() => setIsOpened(true)} />}
+      {!isOpened && <Cover
+        onOpen={() => {
+          const audio = audioRef.current;
+
+          if (audio) {
+            audio.muted = false;
+            audio.volume = 0;
+
+            const playPromise = audio.play();
+
+            if (playPromise !== undefined) {
+              playPromise.catch(() => { });
+            }
+          }
+
+          setIsOpened(true);
+        }}
+      />}
 
       {/* main invitation part */}
-      <motion.div
-        initial={{ filter: "blur(4px)" }}
-        animate={{ filter: isOpened ? "blur(0px)" : "blur(4px)" }}
-        transition={{ duration: 2 }}
-      >
-        <Hero />
-        <Blessing />
-        <BrideGroom />
-        <Countdown />
-        <EventDetail />
-        <Maps />
-        <Gallery />
-        <Greetings />
-        <Gift />
-      </motion.div>
+      <Hero />
+      <Blessing />
+      <BrideGroom />
+      <Countdown />
+      <EventDetail />
+      <Maps />
+      <Gallery />
+      <Greetings />
+      <Thanks />
     </div>
   );
 }

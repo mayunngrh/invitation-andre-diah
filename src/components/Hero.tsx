@@ -1,5 +1,11 @@
-import { motion } from "framer-motion";
-import bgHeroComponent from "../assets/hero/bg-hero-component.jpg";
+import { AnimatePresence, motion } from "framer-motion";
+import bg1 from "../assets/hero/bg-hero-component.jpg";
+import bg2 from "../assets/hero/bg-hero-component-2.jpg";
+import bg3 from "../assets/hero/bg-hero-component-3.jpg";
+import bg4 from "../assets/hero/bg-hero-component-4.jpg";
+import bg5 from "../assets/hero/bg-hero-component-5.jpg";
+import bg6 from "../assets/hero/bg-hero-component-6.jpg";
+import { useEffect, useState } from "react";
 
 const containerVariants = {
   hidden: {},
@@ -16,16 +22,34 @@ const itemVariants = {
 };
 
 const Hero = () => {
+  const images = [bg1, bg2, bg3, bg4, bg5, bg6];
+  const [index, setIndex] = useState(0);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
       {/* Background */}
-      <motion.div
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 6 }}
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${bgHeroComponent})` }}
-      />
+      <div className="absolute inset-0 overflow-hidden">
+        <AnimatePresence>
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 4, ease: "easeOut" }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${images[index]})` }}
+          />
+        </AnimatePresence>
+      </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />

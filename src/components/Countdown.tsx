@@ -27,7 +27,7 @@ const calculateTimeLeft = (targetDate: Date): TimeLeft => {
 const formatNumber = (num: number) => String(num).padStart(2, "0");
 
 function Countdown() {
-  const targetDate = new Date("2026-06-20T09:00:00");
+  const targetDate = new Date("2026-03-25T14:00:00");
 
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(
     calculateTimeLeft(targetDate),
@@ -52,8 +52,7 @@ function Countdown() {
         className="text-center mb-16"
       >
         <h2
-          style={{ fontFamily: "Protest" }}
-          className="text-2xl md:text-4xl font-serif text-black">
+          className="text-2xl md:text-4xl font-serif text-black uppercase tracking-[0.3em]">
           Menuju Hari Bahagia
         </h2>
         <div className="w-20 h-[1px] bg-white/40 mx-auto mt-4" />

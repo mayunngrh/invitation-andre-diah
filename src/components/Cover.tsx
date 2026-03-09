@@ -18,11 +18,19 @@ export default function Cover({ onOpen }: CoverProps) {
 
   const handleOpen = () => {
     setIsOpen(true);
+
+    document.documentElement.requestFullscreen();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
     setTimeout(() => {
       onOpen?.();
     }, 800);
   };
-
+  
   return (
     <motion.section
       initial={{ opacity: 1 }}
