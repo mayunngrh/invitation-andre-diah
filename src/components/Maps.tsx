@@ -80,7 +80,7 @@ const Maps = () => {
           </div>
 
           {/* Map */}
-          <div className="w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-black/10">
+          <div className="w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden border border-black/10 pointer-events-none">
             <iframe
               src={embedUrl}
               width="100%"
