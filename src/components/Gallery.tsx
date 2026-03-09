@@ -96,7 +96,7 @@ const Gallery = () => {
           touchAction: "pan-x"
         }}
       >
-        <div className="flex gap-6 px-6 py-12">
+        <div className="flex gap-6 px-6 py-12 w-max">
 
           {duplicatedImages.map((src, index) => (
             <motion.div
