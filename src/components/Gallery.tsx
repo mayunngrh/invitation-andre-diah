@@ -89,7 +89,12 @@ const Gallery = () => {
       </div>
 
       {/* Scroll Gallery */}
-      <div className="overflow-x-auto scrollbar-hide">
+      <div
+        className="overflow-x-auto scrollbar-hide"
+        style={{
+          WebkitOverflowScrolling: "touch"
+        }}
+      >
         <div className="flex gap-6 px-6 py-12">
 
           {duplicatedImages.map((src, index) => (
