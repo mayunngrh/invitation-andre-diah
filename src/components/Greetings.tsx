@@ -200,25 +200,32 @@ const Greetings = () => {
       </div>
 
 
-      {/* Greeting List */}
-      <div className="max-w-5xl mx-auto space-y-6 max-h-[500px] overflow-y-auto">
-
+      <div
+        className="
+    max-w-5xl
+    mx-auto
+    space-y-6
+    max-h-[500px]
+    overflow-y-auto
+    px-6
+  "
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         {greetings.map((item, index) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.04 }}
             className="
-              bg-white/5
-              backdrop-blur-md
-              border border-white/20
-              rounded-[30px]
-              p-6
-              m-12
-              text-black
-              shadow-[0_10px_40px_rgba(0,0,0,0.15)]
-            "
+        bg-white/5
+        backdrop-blur-md
+        border border-white/20
+        rounded-[30px]
+        p-6
+        text-black
+        shadow-[0_10px_40px_rgba(0,0,0,0.15)]
+      "
           >
             <div className="flex justify-between items-center mb-2">
               <p className="font-semibold">{item.name}</p>
@@ -226,6 +233,7 @@ const Greetings = () => {
                 {formatTimeAgo(item.created_at)}
               </span>
             </div>
+
             <p
               className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
                 ? "bg-green-500/20 text-green-700"
