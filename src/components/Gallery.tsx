@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import image1 from "../assets/gallery/gallery-1.jpg";
@@ -18,7 +18,6 @@ import image14 from "../assets/gallery/gallery-14.jpg";
 import image15 from "../assets/gallery/gallery-15.jpg";
 import image16 from "../assets/gallery/gallery-16.jpg";
 import image17 from "../assets/gallery/gallery-17.jpg";
-
 import image18 from "../assets/gallery/gallery-18.jpg";
 import image19 from "../assets/gallery/gallery-19.jpg";
 import image20 from "../assets/gallery/gallery-20.jpg";
@@ -40,6 +39,9 @@ import image35 from "../assets/gallery/gallery-35.jpg";
 import image36 from "../assets/gallery/gallery-36.jpg";
 import image37 from "../assets/gallery/gallery-37.jpg";
 import image38 from "../assets/gallery/gallery-38.jpg";
+import image39 from "../assets/gallery/gallery-38.jpg";
+import image40 from "../assets/gallery/gallery-38.jpg";
+import image41 from "../assets/gallery/gallery-38.jpg";
 
 const Gallery = () => {
   const group1 = [
@@ -49,7 +51,7 @@ const Gallery = () => {
 
   const group2 = [
     image18, image19, image20, image21, image22, image23, image24, image25,
-    image26, image27, image28, image29, image30, image31, image32, image33, image34, image35, image36, image37, image38
+    image26, image27, image28, image29, image30, image31, image32, image33, image34, image35, image36, image37, image38, image39, image40, image41
   ];
 
   const images = [];
@@ -62,6 +64,7 @@ const Gallery = () => {
   const duplicatedImages = [...images];
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const nextImage = () => {
     if (selectedIndex === null) return;
@@ -74,6 +77,17 @@ const Gallery = () => {
       (selectedIndex - 1 + images.length) % images.length
     );
   };
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <section className="relative  py-24">
@@ -89,36 +103,64 @@ const Gallery = () => {
       </div>
 
       {/* Carousel */}
-      <div className="overflow-hidden px-6">
-        <motion.div
-          drag="x"
-          dragConstraints={{ left: -((images.length - 1) * 300), right: 0 }}
-          className="flex gap-6 cursor-grab active:cursor-grabbing"
-        >
-          {images.map((src, index) => (
+      <div className="px-6">
+        {isMobile ? (
+          // MOBILE → DRAG
+          <div className="overflow-hidden">
             <motion.div
-              key={index}
-              className="
+              drag="x"
+              dragConstraints={{ left: -((images.length - 1) * 300), right: 0 }}
+              className="flex gap-6 cursor-grab active:cursor-grabbing"
+            >
+              {images.map((src, index) => (
+                <motion.div
+                  key={index}
+                  className="
               min-w-[70%]
-              sm:min-w-[45%]
-              md:min-w-[30%]
+              rounded-[30px]
+              overflow-hidden
+              shadow-lg
+            "
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setSelectedIndex(index)}
+                >
+                  <img
+                    src={src}
+                    alt="gallery"
+                    loading="lazy"
+                    className="w-full h-[320px] object-cover"
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        ) : (
+          // DESKTOP → TRACKPAD SCROLL
+          <div className="overflow-x-auto">
+            <div className="flex gap-6">
+              {images.map((src, index) => (
+                <div
+                  key={index}
+                  className="
+              min-w-[30%]
               lg:min-w-[22%]
               rounded-[30px]
               overflow-hidden
               shadow-lg
             "
-              whileTap={{ scale: 0.97 }}
-              onClick={() => setSelectedIndex(index)}
-            >
-              <img
-                src={src}
-                alt="gallery"
-                loading="lazy"
-                className="w-full h-[320px] object-cover"
-              />
-            </motion.div>
-          ))}
-        </motion.div>
+                  onClick={() => setSelectedIndex(index)}
+                >
+                  <img
+                    src={src}
+                    alt="gallery"
+                    loading="lazy"
+                    className="w-full h-[320px] object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Modal Viewer */}

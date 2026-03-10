@@ -25,7 +25,6 @@ const Greetings = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
-  // For drag-based scroll
   const containerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const y = useMotionValue(0);
