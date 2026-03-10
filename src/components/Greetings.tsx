@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, useMotionValue, useAnimation } from "framer-motion";
 import { supabase } from "../services/supabase";
 import { formatTimeAgo } from "../utils/formatTimeAgo";
 
@@ -25,6 +25,20 @@ const Greetings = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
+  // For drag-based scroll
+  const containerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const y = useMotionValue(0);
+  const controls = useAnimation();
+
+  const CONTAINER_HEIGHT = 420;
+
+  const getMaxDrag = () => {
+    if (!innerRef.current) return 0;
+    const innerHeight = innerRef.current.scrollHeight;
+    return Math.max(0, innerHeight - CONTAINER_HEIGHT);
+  };
+
   const fetchGreetings = async (pageNumber = 0) => {
     const from = pageNumber * PAGE_SIZE;
     const to = from + PAGE_SIZE - 1;
@@ -47,6 +61,8 @@ const Greetings = () => {
 
     if (pageNumber === 0) {
       setGreetings(data);
+      // Reset scroll position when refreshing
+      y.set(0);
     } else {
       setGreetings((prev) => [...prev, ...data]);
     }
@@ -60,12 +76,9 @@ const Greetings = () => {
 
   const handleLoadMore = async () => {
     const nextPage = page + 1;
-
     setLoadingMore(true);
-
     setPage(nextPage);
     await fetchGreetings(nextPage);
-
     setLoadingMore(false);
   };
 
@@ -96,12 +109,10 @@ const Greetings = () => {
     <section className="relative py-24 px-6 md:px-16">
       {/* Title */}
       <div className="text-center mb-16">
-        <h2
-          className="text-2xl md:text-4xl font-serif text-black uppercase tracking-[0.3em]">
+        <h2 className="text-2xl md:text-4xl font-serif text-black uppercase tracking-[0.3em]">
           Ucapan & Doa
         </h2>
-        <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4 " />
-
+        <div className="w-20 h-[1px] bg-gray-400 mx-auto mt-4" />
         <div className="w-20 h-[1px] bg-white/40 mx-auto mt-4" />
       </div>
 
@@ -110,9 +121,12 @@ const Greetings = () => {
         onSubmit={handleSubmit}
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
+        style={{
+          WebkitBackdropFilter: "blur(12px)",
+          backdropFilter: "blur(12px)",
+          backgroundColor: "rgba(255,255,255,0.05)",
+        }}
         className="
-          bg-white/5
-          backdrop-blur-md
           border border-white/20
           rounded-[40px]
           p-8
@@ -128,14 +142,9 @@ const Greetings = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="
-            w-full
-            mb-4
-            p-3
-            rounded-xl
-            bg-white/10
-            border border-black/20
-            text-black
-            outline-none
+            w-full mb-4 p-3 rounded-xl
+            bg-white/10 border border-black/20
+            text-black outline-none
           "
         />
 
@@ -143,14 +152,9 @@ const Greetings = () => {
           value={attendance}
           onChange={(e) => setAttendance(e.target.value)}
           className="
-          w-full
-          mb-4
-          px-12
-          rounded-xl
-          bg-white/10
-          border border-black/20
-          text-black
-          outline-none
+            w-full mb-4 px-12 rounded-xl
+            bg-white/10 border border-black/20
+            text-black outline-none
           "
         >
           <option value="Hadir">Hadir</option>
@@ -164,14 +168,9 @@ const Greetings = () => {
           required
           rows={4}
           className="
-            w-full
-            mb-4
-            p-3
-            rounded-xl
-            bg-white/10
-            border border-black/20
-            text-black
-            outline-none
+            w-full mb-4 p-3 rounded-xl
+            bg-white/10 border border-black/20
+            text-black outline-none
           "
         />
 
@@ -179,9 +178,7 @@ const Greetings = () => {
           type="submit"
           disabled={loading}
           className="
-            w-full
-            py-3
-            rounded-full
+            w-full py-3 rounded-full
             border border-black/30
             hover:bg-black hover:text-white
             transition duration-300
@@ -191,61 +188,82 @@ const Greetings = () => {
         </button>
       </motion.form>
 
-      <div className="max-w-5xl mx-auto space-y-6 max-h-[500px] overflow-y-auto">
-
-      </div>
-
-      <div className=" w-full flex justify-center text-gray-300 mb-6" >
+      <div className="w-full flex justify-center text-gray-300 mb-6">
         {totalGreetings} Ucapan & Doa Tulus
       </div>
 
-
+      {/* 
+        Drag-based scroll container — works reliably on Safari iOS.
+        Uses framer-motion drag="y" instead of native overflow scroll,
+        which avoids all Safari scroll + backdrop-filter rendering bugs.
+      */}
       <div
-        className="
-    max-w-5xl
-    mx-auto
-    space-y-6
-    max-h-[500px]
-    overflow-y-auto
-    px-6
-  "
-        style={{ WebkitOverflowScrolling: "touch" }}
+        ref={containerRef}
+        className="max-w-5xl mx-auto px-6 relative"
+        style={{
+          height: `${CONTAINER_HEIGHT}px`,
+          overflow: "hidden",
+          // Clip the draggable inner content
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+          maskImage:
+            "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+        }}
       >
-        {greetings.map((item, index) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.04 }}
-            className="
-        bg-white/5
-        backdrop-blur-md
-        border border-white/20
-        rounded-[30px]
-        p-6
-        text-black
-        shadow-[0_10px_40px_rgba(0,0,0,0.15)]
-      "
-          >
-            <div className="flex justify-between items-center mb-2">
-              <p className="font-semibold">{item.name}</p>
-              <span className="text-xs text-gray-500">
-                {formatTimeAgo(item.created_at)}
-              </span>
-            </div>
-
-            <p
-              className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
-                ? "bg-green-500/20 text-green-700"
-                : "bg-red-500/20 text-red-700"
-                }`}
+        <motion.div
+          ref={innerRef}
+          drag="y"
+          dragDirectionLock
+          dragConstraints={{
+            top: -(getMaxDrag()),
+            bottom: 0,
+          }}
+          dragElastic={0.1}
+          dragMomentum={true}
+          style={{ y }}
+          animate={controls}
+          className="space-y-6 cursor-grab active:cursor-grabbing"
+          // Prevent accidental page scroll interference on touch
+          onDragStart={(e) => e.stopPropagation()}
+        >
+          {greetings.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04 }}
+              className="border border-white/20 rounded-[30px] p-6 text-black shadow-[0_10px_40px_rgba(0,0,0,0.15)]"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.05)",
+                // Both prefixes required for Safari
+                WebkitBackdropFilter: "blur(12px)",
+                backdropFilter: "blur(12px)",
+                // Force GPU layer — fixes Safari blur+scroll glitch
+                WebkitTransform: "translateZ(0)",
+                transform: "translateZ(0)",
+                // Prevent cards from being draggable themselves
+                userSelect: "none",
+                WebkitUserSelect: "none",
+              }}
             >
-              {item.attendance}
-            </p>
-
-            <p className="text-black/80">{item.message}</p>
-          </motion.div>
-        ))}
+              <div className="flex justify-between items-center mb-2">
+                <p className="font-semibold">{item.name}</p>
+                <span className="text-xs text-gray-500">
+                  {formatTimeAgo(item.created_at)}
+                </span>
+              </div>
+              <p
+                className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
+                  ? "bg-green-500/20 text-green-700"
+                  : "bg-red-500/20 text-red-700"
+                  }`}
+              >
+                {item.attendance}
+              </p>
+              <p className="text-black/80">{item.message}</p>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
 
       {hasMore && (
@@ -254,19 +272,17 @@ const Greetings = () => {
             onClick={handleLoadMore}
             disabled={loadingMore}
             className="
-              px-6 py-2
-              rounded-full
+              px-6 py-2 rounded-full
               border border-black/30
               hover:bg-black hover:text-white
               transition
               flex items-center gap-2
-              justify-center
-              mx-auto
+              justify-center mx-auto
             "
           >
             {loadingMore ? (
               <>
-                <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
                 Loading...
               </>
             ) : (
