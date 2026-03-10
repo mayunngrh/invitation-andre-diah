@@ -88,41 +88,37 @@ const Gallery = () => {
         <div className="w-20 h-[1px] bg-black/40 mx-auto mt-4" />
       </div>
 
-      {/* Scroll Gallery */}
-      <div
-        className="overflow-x-auto scrollbar-hide"
-        style={{
-          WebkitOverflowScrolling: "touch",
-          touchAction: "pan-x"
-        }}
-      >
-        <div className="flex gap-6 px-6 py-12 ">
-
-          {duplicatedImages.map((src, index) => (
+      {/* Carousel */}
+      <div className="overflow-hidden px-6">
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -((images.length - 1) * 300), right: 0 }}
+          className="flex gap-6 cursor-grab active:cursor-grabbing"
+        >
+          {images.map((src, index) => (
             <motion.div
               key={index}
-              whileHover={{ scale: 1.05 }}
               className="
-                min-w-[70%]
-                sm:min-w-[45%]
-                md:min-w-[30%]
-                lg:min-w-[22%]
-                rounded-[30px]
-                overflow-hidden
-                cursor-pointer
-                shadow-lg
-              "
-              onClick={() => setSelectedIndex(index % images.length)}
+              min-w-[70%]
+              sm:min-w-[45%]
+              md:min-w-[30%]
+              lg:min-w-[22%]
+              rounded-[30px]
+              overflow-hidden
+              shadow-lg
+            "
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setSelectedIndex(index)}
             >
               <img
                 src={src}
                 alt="gallery"
+                loading="lazy"
                 className="w-full h-[320px] object-cover"
               />
             </motion.div>
           ))}
-
-        </div>
+        </motion.div>
       </div>
 
       {/* Modal Viewer */}
