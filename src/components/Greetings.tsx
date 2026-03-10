@@ -25,6 +25,8 @@ const Greetings = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
   const y = useMotionValue(0);
@@ -103,6 +105,54 @@ const Greetings = () => {
     setHasMore(true);
     fetchGreetings(0);
   };
+
+  const renderCard = (item: Greeting, index: number) => (
+    <motion.div
+      key={item.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04 }}
+      className="border border-white/20 rounded-[30px] p-6 text-black shadow-[0_10px_40px_rgba(0,0,0,0.15)]"
+      style={{
+        backgroundColor: "rgba(255,255,255,0.05)",
+        WebkitBackdropFilter: "blur(12px)",
+        backdropFilter: "blur(12px)",
+        WebkitTransform: "translateZ(0)",
+        transform: "translateZ(0)",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+      }}
+    >
+      <div className="flex justify-between items-center mb-2">
+        <p className="font-semibold">{item.name}</p>
+        <span className="text-xs text-gray-500">
+          {formatTimeAgo(item.created_at)}
+        </span>
+      </div>
+
+      <p
+        className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
+          ? "bg-green-500/20 text-green-700"
+          : "bg-red-500/20 text-red-700"
+          }`}
+      >
+        {item.attendance}
+      </p>
+
+      <p className="text-black/80">{item.message}</p>
+    </motion.div>
+  );
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <section className="relative py-24 px-6 md:px-16">
@@ -191,78 +241,40 @@ const Greetings = () => {
         {totalGreetings} Ucapan & Doa Tulus
       </div>
 
-      {/* 
-        Drag-based scroll container — works reliably on Safari iOS.
-        Uses framer-motion drag="y" instead of native overflow scroll,
-        which avoids all Safari scroll + backdrop-filter rendering bugs.
-      */}
       <div
         ref={containerRef}
         className="max-w-5xl mx-auto px-6 relative"
         style={{
           height: `${CONTAINER_HEIGHT}px`,
-          overflow: "hidden",
-          // Clip the draggable inner content
+          overflow: isMobile ? "hidden" : "auto",
           WebkitMaskImage:
             "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
           maskImage:
             "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
         }}
       >
-        <motion.div
-          ref={innerRef}
-          drag="y"
-          dragDirectionLock
-          dragConstraints={{
-            top: -(getMaxDrag()),
-            bottom: 0,
-          }}
-          dragElastic={0.1}
-          dragMomentum={true}
-          style={{ y }}
-          animate={controls}
-          className="space-y-6 cursor-grab active:cursor-grabbing"
-          // Prevent accidental page scroll interference on touch
-          onDragStart={(e) => e.stopPropagation()}
-        >
-          {greetings.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.04 }}
-              className="border border-white/20 rounded-[30px] p-6 text-black shadow-[0_10px_40px_rgba(0,0,0,0.15)]"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.05)",
-                // Both prefixes required for Safari
-                WebkitBackdropFilter: "blur(12px)",
-                backdropFilter: "blur(12px)",
-                // Force GPU layer — fixes Safari blur+scroll glitch
-                WebkitTransform: "translateZ(0)",
-                transform: "translateZ(0)",
-                // Prevent cards from being draggable themselves
-                userSelect: "none",
-                WebkitUserSelect: "none",
-              }}
-            >
-              <div className="flex justify-between items-center mb-2">
-                <p className="font-semibold">{item.name}</p>
-                <span className="text-xs text-gray-500">
-                  {formatTimeAgo(item.created_at)}
-                </span>
-              </div>
-              <p
-                className={`text-xs inline-block px-3 py-1 rounded-full mb-3 ${item.attendance === "Hadir"
-                  ? "bg-green-500/20 text-green-700"
-                  : "bg-red-500/20 text-red-700"
-                  }`}
-              >
-                {item.attendance}
-              </p>
-              <p className="text-black/80">{item.message}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {isMobile ? (
+          <motion.div
+            ref={innerRef}
+            drag="y"
+            dragDirectionLock
+            dragConstraints={{
+              top: -(getMaxDrag()),
+              bottom: 0,
+            }}
+            dragElastic={0.1}
+            dragMomentum
+            style={{ y }}
+            animate={controls}
+            className="space-y-6 cursor-grab active:cursor-grabbing"
+          >
+            {greetings.map((item, index) => renderCard(item, index))}
+          </motion.div>
+        ) : (
+          <div className="space-y-6 overflow-y-auto p-12 h-full">
+            {greetings.map((item, index) => renderCard(item, index))}
+          </div>
+        )}
       </div>
 
       {hasMore && (

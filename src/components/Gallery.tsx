@@ -39,29 +39,19 @@ import image35 from "../assets/gallery/gallery-35.jpg";
 import image36 from "../assets/gallery/gallery-36.jpg";
 import image37 from "../assets/gallery/gallery-37.jpg";
 import image38 from "../assets/gallery/gallery-38.jpg";
-import image39 from "../assets/gallery/gallery-38.jpg";
-import image40 from "../assets/gallery/gallery-38.jpg";
-import image41 from "../assets/gallery/gallery-38.jpg";
+import image39 from "../assets/gallery/gallery-39.jpg";
+import image40 from "../assets/gallery/gallery-40.jpg";
+import image41 from "../assets/gallery/gallery-41.jpg";
 
 const Gallery = () => {
-  const group1 = [
+
+  const images = [
     image1, image2, image3, image4, image5, image6, image7, image8, image9,
-    image10, image11, image12, image13, image14, image15, image16, image17
-  ];
-
-  const group2 = [
+    image10, image11, image12, image13, image14, image15, image16, image17,
     image18, image19, image20, image21, image22, image23, image24, image25,
-    image26, image27, image28, image29, image30, image31, image32, image33, image34, image35, image36, image37, image38, image39, image40, image41
+    image26, image27, image28, image29, image30, image31, image32, image33,
+    image34, image35, image37, image38, image39, image40, image41
   ];
-
-  const images = [];
-
-  for (let i = 0; i < group1.length; i++) {
-    images.push(group1[i]);
-    if (group2[i]) images.push(group2[i]);
-  }
-
-  const duplicatedImages = [...images];
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -135,7 +125,6 @@ const Gallery = () => {
             </motion.div>
           </div>
         ) : (
-          // DESKTOP → TRACKPAD SCROLL
           <div className="overflow-x-auto">
             <div className="flex gap-6">
               {images.map((src, index) => (
