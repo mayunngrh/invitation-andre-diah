@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import bgCoverComponent from "../assets/cover/bg-cover-component.jpg";
@@ -15,9 +15,16 @@ type CoverProps = {
 
 export default function Cover({ onOpen, audioRef }: CoverProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const guestName = params.get("guest");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleOpen = () => {
     const audio = audioRef.current;
@@ -50,15 +57,21 @@ export default function Cover({ onOpen, audioRef }: CoverProps) {
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${isOpen ? "pointer-events-none" : ""
         }`}
     >
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover grayscale"
-      >
-        <source src={videoCover} type="video/mp4" />
-      </video>
+      {mounted && (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onCanPlayThrough={() => setVideoReady(true)}
+          poster={bgCoverComponent3}
+          className={`absolute inset-0 w-full h-full object-cover grayscale transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"
+            }`}
+        >
+          <source src={videoCover} type="video/mp4" />
+        </video>
+      )}
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 backdrop-blur-xs" />
