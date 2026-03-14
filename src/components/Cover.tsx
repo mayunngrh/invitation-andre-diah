@@ -57,6 +57,9 @@ export default function Cover({ onOpen, audioRef }: CoverProps) {
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${isOpen ? "pointer-events-none" : ""
         }`}
     >
+      {/* Black base background */}
+      <div className="absolute inset-0 bg-black" />
+
       <img
         src={bgCoverComponent3}
         alt="cover background"
