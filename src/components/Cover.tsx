@@ -57,6 +57,12 @@ export default function Cover({ onOpen, audioRef }: CoverProps) {
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden ${isOpen ? "pointer-events-none" : ""
         }`}
     >
+      <img
+        src={bgCoverComponent3}
+        alt="cover background"
+        className="absolute inset-0 w-full h-full object-cover blur-xl scale-110"
+      />
+
       {mounted && (
         <video
           autoPlay
