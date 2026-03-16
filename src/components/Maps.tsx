@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 
 const Maps = () => {
 
-  const latitude = -8.549369322108705;
-  const longitude = 115.21920024047502;
+  const latitude = -8.549732;
+  const longitude = 115.219287;
 
   const embedUrl = `https://www.google.com/maps?q=${latitude},${longitude}&z=15&output=embed`;
   const openMapUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
